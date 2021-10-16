@@ -1,4 +1,4 @@
-## Herramientas
+## Introduccion
 La idea , en pocas palabras, consiste en la implementacion de un sistema que ,buscando dar solucion al problema de cordinacion de horarios y recursos (Timetable problem), permita la generacion de horarios(scheduler), permitiendo la generacion de alarmas(primer prototipo) y en posteriores iteraciones, permita la construccion de los mismos de manera automatica.Segun lo presupuestado, he planteado 3 fases para el desarrollo de la herramienta:
 
 1. Implementacion del Sistema generador de Alarmas.
@@ -9,7 +9,7 @@ La idea , en pocas palabras, consiste en la implementacion de un sistema que ,bu
 Para el desarrollo de la herramienta, en la primera fase, estoy utilizando Laravel 8 + Jetstream Inertia(Vue).
 
 ## Que he desarrollado hasta el momento
-## Iteracion 1
+# Iteracion 1
 Hasta el momento se ha implementado:
     1.CRUD recursos basicos(Users,curriculums,subjects,courses,workshop,laboratories)
         1.1 Users --> No los he tocado
