@@ -32,9 +32,19 @@
             <Link
             :href="route('subjects.create')" 
             class="float-right text-sm font-medium text-gray-900 mx-2 inline-flex items-center h-10 px-5 text-indigo-100 transition-colors duration-150 bg-blue-500 rounded-lg focus:shadow-outline hover:bg-blue-600 active:bg-blue-700 focus:ring-blue-300"
-            type="button">Agregar Asignatura
+            type="button"> 
             <svg class="float-left fill-current w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/></svg>
+            Asignatura
             </Link>
+            <button
+            class="float-right text-sm font-medium text-gray-900 mx-2 inline-flex items-center h-10 px-5 text-indigo-100 transition-colors duration-150 bg-blue-500 rounded-lg focus:shadow-outline hover:bg-blue-600 active:bg-blue-700 focus:ring-blue-300"
+            @click="modalMasive=true">
+            <svg class="float-left fill-current w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/></svg>
+            Masiva
+            </button>
+           
+            
+            
           </div>
         </div>   
 
@@ -97,6 +107,27 @@
       </div>
     </div> 
 
+    <jet-dialog-modal :show="modalMasive">
+      <template v-slot:title>
+        <h1>Add Masive Subjects</h1>
+      </template>
+      <template v-slot:content>
+
+         <a @click="save()" class="bg-blue-500">Export DataBase To xlsx</a>
+
+          <label for="avatar">Choose a profile picture:</label>
+        <form @submit.prevent="submit">
+            <input type="file" @input="form2.file = $event.target.files[0]" /> 
+            <button @click="submit2()">Submit</button>
+            <button @click="exit()">Exit</button>
+        </form>
+        
+      </template>
+      <template v-slot:footer>
+        
+      </template>
+    </jet-dialog-modal>
+
     <jet-dialog-modal :show="modalDelete">
       <template v-slot:title>
         <h1>Eliminar Usuario</h1>
@@ -149,18 +180,22 @@ import {Link} from '@inertiajs/inertia-vue3';
 import {Inertia} from '@inertiajs/inertia';
 import AppLayout from "@/Layouts/AppLayout";
 import JetDialogModal from "@/Jetstream/DialogModal";
-
 export default {
     props:{
         subjects: Array,
     },
     data(){
+      
       return{
         modalDelete: false,
         modalUpdate: false,
+        modalMasive:false,
         selectedSubject: Object,
         form:{
            name: null
+        },
+        form2:{
+           file: null
         }
       }
     },
@@ -181,9 +216,23 @@ export default {
       //  if(confirm("Seguro que quieres eliminar el usuario: "+ data.name +" ?")) return;
         Inertia.delete(route("subjects.destroy", {subject: this.selectedSubject} ));
         this.modalDelete=false;
-      }
+      },
       
+      exit: function(){
+        this.modalMasive = false;
+      },
+      save: function(){
+        Inertia.get(route("subjects.export"))
+        this.modalMasive = false;
+      },
 
+      submit2: function() {
+        
+        Inertia.post(route('subjects.import'),{
+        _method:'get',
+        file: this.form2.file
+        });
+      },   
     }
 };
 </script>

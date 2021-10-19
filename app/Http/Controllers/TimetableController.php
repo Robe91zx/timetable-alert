@@ -19,10 +19,11 @@ class TimetableController extends Controller
      */
     public function index()
     {
+        $weekDays = Timetable::WEEK_DAYS;    
         $courses = Course::with('subjects')->get();
         $workshops = Workshop::with('courses')->get();
         $laboratories = Laboratory::with('courses')->get();
-        return Inertia::render('ShowTimetables', ['courses' => $courses,'workshops' =>$workshops,'laboratories' =>$laboratories]);
+        return Inertia::render('ShowTimetables', ['courses' => $courses,'workshops' =>$workshops,'laboratories' =>$laboratories, 'weekdays' => $weekDays]);
     }
 
     /**

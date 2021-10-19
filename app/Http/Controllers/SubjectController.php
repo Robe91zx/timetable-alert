@@ -7,6 +7,9 @@ use App\Models\Subject;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
+use Excel;
+use App\Imports\SubjectImport;
+use App\Exports\SubjectsExport;
 
 class SubjectController extends Controller
 {
@@ -41,6 +44,11 @@ class SubjectController extends Controller
         return Inertia::render('CreateSubjectForm',['curriculums' => $curriculums]);
     }
 
+    public function createmultiple()
+    {
+        $a = true;    
+        return Inertia::render('CreateSubjectFormMultiple', ['modalMasive'=> $a]);
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -51,10 +59,9 @@ class SubjectController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'description' => 'required',
+            'semester' => 'required',
             'department' => 'required',
             'total_hour' => 'required',
-            'department' => 'required',
             'requisite' => 'required',
             'state' => 'required',
             'workshop' => 'required',
@@ -67,6 +74,14 @@ class SubjectController extends Controller
 
         request()->session()->flash('message', "Asignatura Registrada");
         return Redirect::route('subjects.index');
+    }
+
+    public function storemultiple(Request $request)
+    {
+
+        $elements = $request->all();
+        $subjects = json_decode($request->all());
+        return $subjects;
     }
 
     /**
@@ -134,5 +149,26 @@ class SubjectController extends Controller
         }
         return response()->json($subjects2);
 
+    }
+
+   
+
+    public function import(Request $request)
+    {
+        $request->validate([
+           'file' => 'required|max:10000|mimes:xlsx,xls',
+        ]);
+        $path = $request->file('file');
+        
+        Excel::import(new SubjectImport, $path);
+        request()->session()->flash('message', "Asignatura/as Cargada/as ");
+
+        return Redirect::route('subjects.index');
+    }
+
+    public function export()
+    {
+        request()->session()->flash('message', "Archivo Generado");
+        return Excel::download(new SubjectsExport,'subjects.xlsx');
     }
 }

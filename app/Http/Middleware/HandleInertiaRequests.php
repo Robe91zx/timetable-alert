@@ -17,7 +17,7 @@ class HandleInertiaRequests extends Middleware
 
     /**
      * Determines the current asset version.
-     *
+     *clear
      * @see https://inertiajs.com/asset-versioning
      * @param  \Illuminate\Http\Request  $request
      * @return string|null
@@ -34,6 +34,7 @@ class HandleInertiaRequests extends Middleware
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
+    
     public function share(Request $request)
     {
         return array_merge(parent::share($request), [
