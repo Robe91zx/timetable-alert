@@ -6,13 +6,13 @@
                 </slot>
             </div>
 
-            <div class="mt-4">
+            <div class="text-center p-5 flex-auto justify-center">
                 <slot name="content">
                 </slot>
             </div>
         </div>
 
-        <div class="px-6 py-4 bg-gray-100 text-right">
+        <div class="p-3  mt-2 text-center space-x-4 md:block">
             <slot name="footer">
             </slot>
         </div>

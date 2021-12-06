@@ -22,14 +22,42 @@
                                 <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
                                     Inicio
                                 </jet-nav-link>
-                                
+                                <div class="hidden sm:flex sm:items-center sm:ml-6">
+                                    <div class="ml-3 relative">
+                                        <jet-dropdown align="right" width="60" >   
+                                            <template #trigger>
+                                                <span class="cursor-pointer text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition">Recursos Fisicos</span>
+                                            </template>
+                                            <template #content > 
+                                                <jet-dropdown-link :href="route('users.index')" :active="route().current('users.index')">
+                                                Usuarios
+                                                </jet-dropdown-link> 
+                                                <jet-dropdown-link :href="route('rolesandpermissions.index')" :active="route().current('rolesandpermissions.index')">
+                                                Roles and Permissions
+                                                </jet-dropdown-link>  
+                                            </template>
+                                        </jet-dropdown>  
+                                    </div>
+                                </div>
                                 <div class="hidden sm:flex sm:items-center sm:ml-6">
                                     <div class="ml-3 relative">
                                         <jet-dropdown align="right" width="60" >   
                                             <template #trigger>
                                                 <span class="cursor-pointer text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition">Recursos</span>
                                             </template>
-                                            <template #content >   
+                                            <template #content > 
+                                                <jet-dropdown-link :href="route('faculties.index')" :active="route().current('faculties.index')">
+                                                Facultades
+                                                </jet-dropdown-link> 
+                                                <jet-dropdown-link :href="route('departments.index')" :active="route().current('departments.index')">
+                                                Departamentos
+                                                </jet-dropdown-link>  
+                                                <jet-dropdown-link :href="route('colleges.index')" :active="route().current('colleges.index')">
+                                                Escuelas
+                                                </jet-dropdown-link>  
+                                                <jet-dropdown-link :href="route('carreers.index')" :active="route().current('carreers.index')">
+                                                Carreras
+                                                </jet-dropdown-link>
                                                 <jet-dropdown-link :href="route('curriculums.index')" :active="route().current('curriculums.index')">
                                                 Mallas
                                                 </jet-dropdown-link>
@@ -46,12 +74,16 @@
                                         </jet-dropdown>  
                                     </div>
                                 </div>
-
                                 <jet-nav-link :href="route('timetables.index')" :active="route().current('timetables.index')">
                                     Gestor de Horarios
                                 </jet-nav-link>
+                                
                         </div>   
                     </div>
+
+
+
+
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <div class="ml-3 relative">
@@ -167,6 +199,16 @@
                     </div>
                 </div>
 
+
+
+
+
+
+
+
+
+
+
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
@@ -244,10 +286,13 @@
                 </div>
             </nav>
 
+
             <!-- Page Heading -->
             <header class="bg-white shadow" v-if="$slots.header">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header"></slot>
+                    <slot name="header">
+                        
+                    </slot>
                 </div>
             </header>
 

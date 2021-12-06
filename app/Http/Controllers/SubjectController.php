@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Faculty;
+use App\Http\Requests\StoreSubject;
+use App\Http\Requests\UpdateSubject;
 use App\Models\Curriculum;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
 use Excel;
-use App\Imports\SubjectImport;
+use App\Imports\SubjectsImport;
 use App\Exports\SubjectsExport;
 
 class SubjectController extends Controller
@@ -20,17 +23,18 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        
-        $subjects = Subject::with('curriculums')->get();
+        $columns = Subject::SUBJECTS_COLUMNS;
+        $options = Subject::SUBJECTS_OPTIONS;
 
         if(request()->has("name")){
-            $name = request("name");
-            //no funciona el like en $subject->where(...)
-            $subjects = Subject::with('curriculums')
-                        ->where('name','like','%'.$name.'%')->get();
+            $subjects = Faculty::with(['subjects' => fn($query) => $query->where('name', 'LIKE', '%'.request("name").'%')])
+               ->whereHas('subjects', fn ($query) => $query->where('name', 'LIKE', '%'.request("name").'%')
+            )->get();
+         }else{
+            $subjects = Faculty::with('subjects')->get();
         }
-        //dd($subjects);
-        return Inertia::render('ShowSubject',['subjects' => $subjects]);
+        
+        return Inertia::render('Subjects/ShowSubject',['subjects' => $subjects, 'columns' => $columns, 'options' => $options]);
     }
 
     /**
@@ -40,48 +44,23 @@ class SubjectController extends Controller
      */
     public function create()
     {
-        $curriculums = Curriculum::all();
-        return Inertia::render('CreateSubjectForm',['curriculums' => $curriculums]);
+        //            
     }
 
-    public function createmultiple()
-    {
-        $a = true;    
-        return Inertia::render('CreateSubjectFormMultiple', ['modalMasive'=> $a]);
-    }
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreSubject $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'semester' => 'required',
-            'department' => 'required',
-            'total_hour' => 'required',
-            'requisite' => 'required',
-            'state' => 'required',
-            'workshop' => 'required',
-            'laboratory' => 'required',
-            'equivalence' => 'required',
-            'curriculum_id' => 'required'
-        ]);
-
         Subject::create($request->all());
 
-        request()->session()->flash('message', "Asignatura Registrada");
+        request()->session()->flash('flash.banner', "Asignatura {$request->name} Registrada ");
+        request()->session()->flash('flash.bannerStyle', 'success');
+        
         return Redirect::route('subjects.index');
-    }
-
-    public function storemultiple(Request $request)
-    {
-
-        $elements = $request->all();
-        $subjects = json_decode($request->all());
-        return $subjects;
     }
 
     /**
@@ -92,7 +71,10 @@ class SubjectController extends Controller
      */
     public function show(Subject $subject)
     {
-        //
+        //$columns = ;
+        $AllOf = Curriculum::with('curriculums')->where('vcode','=',$subject->vcode)->get();
+
+        return Inertia::render('Relations/Departments_Colleges_OfFaculty', ['CoursesOf'=> $AllOf, 'columns'=> $columns]);
     }
 
     /**
@@ -103,7 +85,7 @@ class SubjectController extends Controller
      */
     public function edit(Subject $subject)
     {
-        return Inertia::render('EditSubjectForm',['subject'=>$subject]);
+        return Inertia::render('Subjects/EditSubjectForm', [ 'subject' => $subject]);
     }
 
     /**
@@ -113,10 +95,12 @@ class SubjectController extends Controller
      * @param  \App\Models\Subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Subject $subject)
+    public function update(UpdateSubject $request, Subject $subject)
     {
         $subject-> update($request->all());
-        request()->session()->flash('message', "Asignatura Modificada");
+        request()->session()->flash('flash.banner', "Asignatura {$request->name} Actualizada ");
+        request()->session()->flash('flash.bannerStyle', 'success');
+
         return Redirect::route('subjects.index');
     }
 
@@ -129,9 +113,33 @@ class SubjectController extends Controller
     public function destroy(Subject $subject)
     {
         $subject->delete();
-        request()->session()->flash('message', "Asignatura Eliminada");
+        request()->session()->flash('flash.banner', "Asignatura {$subject->name} Eliminada ");
+        request()->session()->flash('flash.bannerStyle', 'success');
+
         return Redirect::route('subjects.index');
     }
+
+    public function import(Request $request)
+    {
+        $path = $request->file('file');
+
+        Excel::import(new SubjectImport, $path);
+        request()->session()->flash('flash.banner', "Asignaturas Cargadas desde Excel");
+        request()->session()->flash('flash.bannerStyle', 'success');
+
+        return Redirect::route('subjects.index');
+    }
+
+    public function export()
+    {
+        request()->session()->flash('flash.banner', "Asignaturas Respaldadas en Excel");
+        request()->session()->flash('flash.bannerStyle', 'success');
+
+        return Excel::download(new SubjectsExport,'subjects.xlsx');
+    }
+
+/////////////////////////////////////////////////////////////////
+
     //Metodos Personalizados
     public function getSubjects(Request $request)
     {
@@ -150,25 +158,14 @@ class SubjectController extends Controller
         return response()->json($subjects2);
 
     }
+    public function storemultiple(Request $request)
+    {
 
+        $elements = $request->all();
+        $subjects = json_decode($request->all());
+        return $subjects;
+    }
    
 
-    public function import(Request $request)
-    {
-        $request->validate([
-           'file' => 'required|max:10000|mimes:xlsx,xls',
-        ]);
-        $path = $request->file('file');
-        
-        Excel::import(new SubjectImport, $path);
-        request()->session()->flash('message', "Asignatura/as Cargada/as ");
-
-        return Redirect::route('subjects.index');
-    }
-
-    public function export()
-    {
-        request()->session()->flash('message', "Archivo Generado");
-        return Excel::download(new SubjectsExport,'subjects.xlsx');
-    }
+    
 }

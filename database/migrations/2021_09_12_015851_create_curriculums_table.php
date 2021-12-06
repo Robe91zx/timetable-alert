@@ -15,10 +15,17 @@ class CreateCurriculumsTable extends Migration
     {
         Schema::create('curriculums', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('vcode')->index();
+            $table->string('code');
             $table->string('name');
-            $table->integer('faculty');
-            $table->integer('total_hour');
-            $table->integer('carreer_at');
+            $table->string('description');
+            $table->integer('duration');
+            $table->unsignedBigInteger('carreer_vcode')->nullable();
+            $table->foreign('carreer_vcode')
+                  ->references('vcode')
+                  ->on('carreers')
+                  ->cascadeOnUpdate()
+                  ->nullOnDelete(); 
             $table->integer('state');
             $table->timestamps();
         });

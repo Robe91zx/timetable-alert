@@ -16,16 +16,12 @@ class SubjectImport implements ToModel,withHeadingRow
     public function model(array $row)
     {
         return new Subject([
+            'vcode' => $row['name'],
             'name' => $row['name'],
             'semester' => $row['semester'],
-            'department' => $row['department'],
-            'total_hour' => $row['total_hour'],
-            'requisite' => $row['requisite'],
-            'state' => $row['state'],
-            'workshop' => $row['workshop'],
-            'laboratory' => $row['laboratory'],
-            'equivalence' => $row['equivalence'],
-            'curriculum_id' => $row['curriculum_id']
+            'hours' => $row['hours'],
+            'faculty_vcode' => $row['faculty_vcode'],
+            'state' => $row['state']
         ]);
     }
 }

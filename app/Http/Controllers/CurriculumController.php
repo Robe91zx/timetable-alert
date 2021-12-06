@@ -3,9 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Curriculum;
+use App\Models\Carreer;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Http\Requests\StoreCurriculum;
+use App\Http\Requests\UpdateCurriculum;
 use Illuminate\Support\Facades\Redirect;
+use Excel;
+use App\Imports\CurriculumsImport;
+use App\Exports\CurriculumsExport;
+use Illuminate\Database\Eloquent\Builder;
 
 class CurriculumController extends Controller
 {
@@ -16,8 +23,19 @@ class CurriculumController extends Controller
      */
     public function index()
     {
-        $curriculums = Curriculum::all();
-        return Inertia::render('ShowCurriculum',['curriculums' => $curriculums]);
+        $columns = Curriculum::CURRICULUMS_COLUMNS;
+        $options = Curriculum::CURRICULUMS_OPTIONS;
+
+        if(request()->has("name")){
+            $curriculums = Carreer::with(['curriculums' => fn($query) => $query->where('name', 'LIKE', '%'.request("name").'%')])
+               ->whereHas('curriculums', fn ($query) => $query->where('name', 'LIKE', '%'.request("name").'%')
+            )->get();
+         }
+        else{
+            $curriculums = Carreer::with('curriculums')->get();
+        }
+
+        return Inertia::render('Curriculums/ShowCurriculum', ['curriculums' => $curriculums, 'columns' => $columns, 'options' => $options ]);
     }
 
     /**
@@ -27,7 +45,7 @@ class CurriculumController extends Controller
      */
     public function create()
     {
-        return Inertia::render('CreateCurriculumForm');
+
     }
 
     /**
@@ -36,17 +54,13 @@ class CurriculumController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCurriculum $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'faculty' => 'required',
-            'total_hour' => 'required',
-            'carreer_at' => 'required',
-            'state' => 'required',
-        ]);
-
         Curriculum::create($request->all());
+
+        request()->session()->flash('flash.banner', "Recurso: {$request->name} Creado ");
+        request()->session()->flash('flash.bannerStyle', 'success');  
+        
         return Redirect::route('curriculums.index');
     }
 
@@ -69,7 +83,7 @@ class CurriculumController extends Controller
      */
     public function edit(Curriculum $curriculum)
     {
-        return Inertia::render('EditCurriculumForm',['curriculum'=>$curriculum]);
+        return Inertia::render('Curriculums/EditCurriculumForm', ['curriculum'=>$curriculum]);
     }
 
     /**
@@ -79,9 +93,11 @@ class CurriculumController extends Controller
      * @param  \App\Models\Curriculum  $curriculum
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Curriculum $curriculum)
+    public function update(UpdateCurriculum $request, Curriculum $curriculum)
     {
         $curriculum-> update($request->all());
+        request()->session()->flash('flash.banner', "Recurso: {$curriculum->name} Actualizado ");
+        request()->session()->flash('flash.bannerStyle', 'success');  
 
         return Redirect::route('curriculums.index');
     }
@@ -95,7 +111,32 @@ class CurriculumController extends Controller
     public function destroy(Curriculum $curriculum)
     {
         $curriculum->delete();
+        request()->session()->flash('flash.banner', "Recurso: {$curriculum->name} Eliminado ");
+        request()->session()->flash('flash.bannerStyle', 'success');  
+
         return Redirect::route('curriculums.index');
+    }
+
+    public function remove(Request $request)
+    {
+        $curriculum->update(['carreer_vcode' => '0']);
+        
+        return response()->json($curriculum);
+    }
+
+    public function activate(Curriculum $curriculum)
+    {
+        
+        
+
+        return response()->json($curriculum);
+    }
+
+    public function deactivate(Curriculum $curriculum)
+    {
+        $curriculum->update(['state' => '0']);
+    
+        return response()->json($curriculum);
     }
 
     public function getCurriculums()
@@ -111,5 +152,26 @@ class CurriculumController extends Controller
         }
         return response()->json($othercurriculums);
 
+    }
+
+
+
+    public function import(Request $request)
+    {
+        $request->validate([
+           'file' => 'required|max:10000|mimes:xlsx,xls',
+        ]);
+        $path = $request->file('file');
+        
+        Excel::import(new CurriculumsImport, $path);
+        request()->session()->flash('message', "Mallas Cargadas ");
+
+        return Redirect::route('curriculums.index');
+    }
+
+    public function export()
+    {
+        request()->session()->flash('message', "Archivo Generado");
+        return Excel::download(new CurriculumsExport,'curriculums.xlsx');
     }
 }

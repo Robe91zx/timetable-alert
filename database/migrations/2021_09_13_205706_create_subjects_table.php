@@ -15,22 +15,19 @@ class CreateSubjectsTable extends Migration
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('vcode')->index();
+            $table->string('code');
             $table->string('name');
             $table->integer('semester');
-            $table->string('department');
-            $table->integer('total_hour');
-            $table->integer('requisite');
-            $table->integer('state');
-            $table->integer('workshop');
-            $table->integer('laboratory');
-            $table->integer('equivalence');
-            $table->foreignId('curriculum_id')
-                  ->nullable()
-                  ->constrained('curriculums')
+            $table->integer('hours');
+            $table->unsignedBigInteger('faculty_vcode')->nullable();
+            $table->foreign('faculty_vcode')
+                  ->references('vcode')
+                  ->on('faculties')
                   ->cascadeOnUpdate()
                   ->nullOnDelete();
+            $table->integer('state');
             $table->timestamps();
-            
         });
     }
 

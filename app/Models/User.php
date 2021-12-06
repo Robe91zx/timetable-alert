@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
+use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -17,6 +18,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -57,5 +59,25 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+    ];
+
+    public function getUserdontrole(){
+        $user = User::hasRole();
+
+        return $user;
+    }
+
+    const USERS_COLUMNS = [
+        '0' =>'Nombre',
+        '1' =>'Carrera',
+        '2' =>'Email',
+        '3' =>'Contacto'
+    ];
+
+    const USERS_OPTIONS = [
+        '1' =>'Asignar Rol a Usuario',
+        '2' =>'Crear Permisos',
+        '3' =>'Asignar Roles',
+        '4' =>'Asignar Permisos a Rol',
     ];
 }
