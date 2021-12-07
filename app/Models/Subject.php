@@ -14,16 +14,11 @@ class Subject extends Model
         return $this->belongsTo(Carreer::class, 'faculty_vcode', 'vcode');
     }
     
-
-
-
-/////////////////////////////////////////////////////////////////
-
     public function curriculums(){
-        return $this->belongsTo(Curriculum::class, 'curriculum_id');
+        return $this->belongsToMany(Curriculum::class,'curriculum_subjects', 'subject_vcode', 'curriculum_vcode' ,'vcode','vcode');
     }
 
-    
+/////////////////////////////////////////////////////////////////
 
     public function couses(){
         return $this->hasMany(Course::class, 'id');

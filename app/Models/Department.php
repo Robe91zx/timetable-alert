@@ -14,11 +14,11 @@ class Department extends Model
     protected $fillable = ['vcode','code','name','phone','email','website', 'vcode'];
 
     public function faculties(){
-        return $this->belongsToMany(Faculty::class, 'faculty_departments', 'department_vcode','faculty_vcode','vcode','vcode');
+        return $this->belongsToMany(Faculty::class, 'faculty_has_departments', 'department_vcode','faculty_vcode','vcode','vcode');
     }
 
     public function carreers(){
-        return $this->belongsToMany(Carreer::class, 'department_carreers','department_vcode','carreer_vcode','vcode','vcode');
+        return $this->belongsToMany(Carreer::class, 'department_has_carreers','department_vcode','carreer_vcode','vcode','vcode');
     }
     
     const DEPARTMENTS_COLUMNS = [

@@ -11,12 +11,14 @@ class Curriculum extends Model
     protected $fillable = ['name', 'code', 'description', 'duration', 'vcode', 'carreer_vcode', 'state'];
 
     public function subjects(){
-        return $this->hasMany(Subject::class, 'id');
+        return $this->belongsToMany(Subject::class,'curriculum_has_subjects', 'curriculum_vcode', 'subject_vcode' ,'vcode','vcode');
     }
 //indico la clave foranea
     public function carreers(){
         return $this->belongsTo(Carreer::class, 'carreer_vcode', 'vcode');
     }
+
+   
 
     const CURRICULUMS_COLUMNS = [
         '0' => 'CODIGO',

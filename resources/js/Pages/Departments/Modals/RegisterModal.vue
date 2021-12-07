@@ -56,34 +56,30 @@
 </template>
 
 <script>
-  import { defineComponent } from 'vue';
-  import { useForm} from '@inertiajs/inertia-vue3';
-  import Modal from '@/Jetstream/Modal.vue'
-  import JetTitle from "@/Jetstream/Title"
-  import JetFormTitle from "@/Jetstream/FormTitle"
-  import JetFormInput from "@/Jetstream/FormInput"
-  import JetButton from "@/Jetstream/Button"
-  import ExitIcon from "@/Jetstream/ExitIcon"
+import { defineComponent } from 'vue';
+import { useForm} from '@inertiajs/inertia-vue3';
+import Modal from '@/Jetstream/Modal.vue'
+import JetTitle from "@/Jetstream/Title"
+import JetFormTitle from "@/Jetstream/FormTitle"
+import JetFormInput from "@/Jetstream/FormInput"
+import JetButton from "@/Jetstream/Button"
+import ExitIcon from "@/Jetstream/ExitIcon"
 
-  export default defineComponent({
-    data(){
-      return{
-        form: useForm({ name: null, vcode: Math.floor(Math.random() * 100000), code: null, vcode: Math.floor(Math.random() * 100000), phone: null, email: null, website:null})     }
-    },   
+export default defineComponent({
+  data(){
+    return{
+      form: useForm({ name: null, vcode: Math.floor(Math.random() * 100000), code: null, vcode: Math.floor(Math.random() * 100000), phone: null, email: null, website:null}) }
+  },   
          
-    components: {
-      Modal, JetButton, JetTitle, JetFormTitle, JetFormInput, ExitIcon
-    },
+  components: { Modal, JetButton, JetTitle, JetFormTitle, JetFormInput, ExitIcon },
 
-    props: {
-      show: { default: false}, maxWidth: { default: '2xl'}, closeable: { default: true}, errors: Object,
-    },
+  props: { show: { default: false}, maxWidth: { default: '2xl'}, closeable: { default: true} },
 
-    methods: {
-      close: function(){this.$parent.$parent.closeModalCreate()},
-      registerDepartment: function(){ this.form.post(route('departments.store'), {
-        preserveState: (page) => Object.keys(page.props.errors).length > 0,}); 
-      } ,
-    }  
-  })
+  methods: {
+    close: function(){this.$parent.$parent.closeRegisterDepartment()},
+    registerDepartment: function(){ this.form.post(route('departments.store'), {
+      preserveState: (page) => Object.keys(page.props.errors).length > 0,}); 
+    } ,
+  }  
+})
 </script>

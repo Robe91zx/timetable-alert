@@ -110,13 +110,8 @@ export default {
   },
 
   methods:{
-    openModalInfoCarreer(){this.modalInfoCarreer = true},closeModalInfoCarreer(){this.modalInfoCarreer = false},
-    openModalUpdate(){this.modalUpdate = true},closeModalUpdate(){this.modalUpdate = false},
-    openModalDelete(){this.modalDelete = true},closeModalDelete(){this.modalDelete = false},
-      
     showCurriculumsOf: function(){Inertia.get(route("carreers.showCurriculums", { carreer: this.selectedCarreer} )); this.openModalInfoCarreer();},
     updateCarreer: function(){Inertia.get(route('carreers.edit', { carreer: this.selectedCarreer} )); },
-    
     
     ////////////////DONT WORKING///////////////////
     InfoCarreer: function(){
@@ -130,6 +125,11 @@ export default {
       console.log(facultiesanddepartment)
       Inertia.delete(route('facultiesanddepartments.destroy', { facultiesanddepartment: this.selectedDepartment.pivot} ))  
     },
+    ///////////////////
+    openModalInfoCarreer(){this.modalInfoCarreer = true},closeModalInfoCarreer(){this.modalInfoCarreer = false},
+    openModalUpdate(){this.modalUpdate = true},closeModalUpdate(){this.modalUpdate = false},
+    openModalDelete(){this.modalDelete = true},closeModalDelete(){this.modalDelete = false},
   }
+  
 }
 </script>

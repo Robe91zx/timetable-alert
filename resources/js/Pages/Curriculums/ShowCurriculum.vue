@@ -159,6 +159,7 @@ export default {
     deleteCurriculum: function(){ Inertia.delete(route("curriculums.destroy", { curriculum: this.selectedCurriculum} )); this.closeModalDelete()},
     updateCurriculum: function(){ Inertia.get(route("curriculums.edit", { curriculum: this.selectedCurriculum} )); this.closeModalUpdate()},      
 
+    showSujectsOf: function(){ Inertia.get(route("curriculums.showSubjects", { curriculum: this.selectedCurriculum} )); this.closeModalUpdate()},
     //Dont Work////////////////////////////////////
     
     deactivateCurriculum: function(){ axios.put(route('curriculums.deactivate'), {curriculum: this.selectedCurriculum}).then((response) => {console.log(response.data)}) },

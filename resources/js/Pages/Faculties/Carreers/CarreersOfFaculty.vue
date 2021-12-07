@@ -7,37 +7,37 @@
   </template>   
 
   <div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"> 
-      <div class="flex flex-col mt-8">
-        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead>
-                  <th scope="col" v-for="column in columns" :key="column.name"><jet-title-label>{{column}}</jet-title-label></th>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">     
-                  <template v-for="faculty in CarreersOf" v-bind:key="faculty.id">   
-                    <tr v-for="carreer in faculty.carreers" :key="carreer.id"> 
-                      <td class="px-6 py-4 text-center"><jet-label>{{carreer.code}}</jet-label></td>
-                      <td class="px-6 py-4 text-center"><jet-label>{{carreer.name}}</jet-label></td>
-                      <td class="px-6 py-4 text-center"><jet-label>{{carreer.email}}</jet-label></td>
-                      <td class="px-6 py-4 text-center"><jet-label>{{carreer.phone}}</jet-label></td>
+  <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"> 
+  <div class="flex flex-col mt-8">
+  <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+  <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+  <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead>
+        <th scope="col" v-for="column in columns" :key="column.name"><jet-title-label>{{column}}</jet-title-label></th>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">     
+        <template v-for="faculty in CarreersOf" v-bind:key="faculty.id">   
+          <tr v-for="carreer in faculty.carreers" :key="carreer.id"> 
+            <td class="px-6 py-4 text-center"><jet-label>{{carreer.code}}</jet-label></td>
+            <td class="px-6 py-4 text-center"><jet-label>{{carreer.name}}</jet-label></td>
+            <td class="px-6 py-4 text-center"><jet-label>{{carreer.email}}</jet-label></td>
+            <td class="px-6 py-4 text-center"><jet-label>{{carreer.phone}}</jet-label></td>
 
-                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <jet-button @click="openInfoCarreer();selectedCarreer=carreer"> <jet-show/> </jet-button>
-                        <jet-button @click="openModalUpdate();selectedCarreer=carreer"> <jet-edit/> </jet-button>
-                        <jet-modify-button @click="openModalDelete();selectedCarreer=carreer"> <jet-delete/> </jet-modify-button>
-                      </td>
-                    </tr>
-                  </template>  
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <jet-button @click="openInfoCarreer();selectedCarreer=carreer"> <jet-show/> </jet-button>
+              <jet-button @click="openModalUpdate();selectedCarreer=carreer"> <jet-edit/> </jet-button>
+              <jet-modify-button @click="openModalDelete();selectedCarreer=carreer"> <jet-delete/> </jet-modify-button>
+            </td>
+          </tr>
+        </template>  
+      </tbody>
+    </table>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
   </div>     
 
   <jet-dialog-modal :show="modalInfoCarreer">
@@ -75,10 +75,8 @@
       <jet-modify-button @click="closeModalDelete()">Cerrar</jet-modify-button>
       <jet-danger-button @click="deleteCarreerOf()">Borrar</jet-danger-button>    
     </template>
-  </jet-dialog-modal>
+  </jet-dialog-modal> 
 
-  
- 
 </app-layout>
 </template>
 
@@ -106,22 +104,15 @@ export default {
     JetEdit, JetShow, JetDelete, ModalShowIcon, ModalEditIcon, ModalDeleteIcon
   },
 
-  props:{ CarreersOf:Array, columns:Array, selectedCarreer: Object
-    },
+  props:{ CarreersOf:Array, columns:Array, selectedCarreer: Object },
 
   data(){
-    return{ 
-      modalUpdate: false, modalDelete: false, modalInfoCarreer: false,        
-    }    
+    return{ modalUpdate: false, modalDelete: false, modalInfoCarreer: false }    
   },
 
   methods:{
-    openInfoCarreer(){this.modalInfoCarreer =true}, closeInfoCarreer(){this.modalInfoCarreer =false},
-    openModalUpdate(){this.modalUpdate =true}, closeModalUpdate(){this.modalUpdate =false},
-    openModalDelete(){this.modalDelete =true}, closeModalDelete(){this.modalDelete =false},
-
     updateCarreer: function(){Inertia.get(route('carreers.edit', { carreer: this.selectedCarreer} )); },
-    showCurriculumsOf: function(){ Inertia.get(route("carreers.show", {carreer: this.selectedCarreer.id} )); this.closeInfoCarreer(); },
+    showCurriculumsOf: function(){ Inertia.get(route("carreers.showCurriculums", {carreer: this.selectedCarreer} )); this.closeInfoCarreer(); },
     
     ///////////////////////NOT WORKING//////////////////
     InfoCarreer: function(){
@@ -135,6 +126,11 @@ export default {
       console.log(facultiesandcarreer)
       Inertia.delete(route('facultiesandcarreers.destroy', { facultiesandcarreer: this.selectedcarreer.pivot} ))  
     },
+
+    ///////////////////////////////////////////////////
+    openInfoCarreer(){this.modalInfoCarreer =true}, closeInfoCarreer(){this.modalInfoCarreer =false},
+    openModalUpdate(){this.modalUpdate =true}, closeModalUpdate(){this.modalUpdate =false},
+    openModalDelete(){this.modalDelete =true}, closeModalDelete(){this.modalDelete =false},
   }
 }
 </script>

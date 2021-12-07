@@ -7,55 +7,55 @@
   </template>   
   
   <div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"> 
-      <div class="flex flex-col mt-8">
-        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead>
-                  <th scope="col" v-for="column in columns" :key="column.name"><jet-title-label>{{column}}</jet-title-label></th>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">     
-                  <template v-for="faculty in DepartmentsOf" v-bind:key="faculty.id">   
-                    <template v-if="faculty.departments">
-                      <tr v-for="department in faculty.departments" :key="department.id"> 
-                        <td class="px-6 py-4 text-center"><jet-label>{{department.code}}</jet-label></td>
-                        <td class="px-6 py-4 text-center"><div class="text-sm text-gray-500">Departamento de</div>
-                        <jet-label>{{department.name}}</jet-label></td>
-                        <td class="px-6 py-4 text-center"><jet-label>{{department.email}}</jet-label></td>
-                        <td class="px-6 py-4 text-center"><jet-label>{{department.phone}}</jet-label></td>
+  <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"> 
+  <div class="flex flex-col mt-8">
+  <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+  <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+  <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead>
+        <th scope="col" v-for="column in columns" :key="column.name"><jet-title-label>{{column}}</jet-title-label></th>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">     
+        <template v-for="faculty in DepartmentsOf" v-bind:key="faculty.id">   
+          <template v-if="faculty.departments">
+            <tr v-for="department in faculty.departments" :key="department.id"> 
+              <td class="px-6 py-4 text-center"><jet-label>{{department.code}}</jet-label></td>
+              <td class="px-6 py-4 text-center"><div class="text-sm text-gray-500">Departamento de</div>
+              <jet-label>{{department.name}}</jet-label></td>
+              <td class="px-6 py-4 text-center"><jet-label>{{department.email}}</jet-label></td>
+              <td class="px-6 py-4 text-center"><jet-label>{{department.phone}}</jet-label></td>
 
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <jet-button @click="openModalInfo();selectedDepartment=department"> <jet-show/> </jet-button>
-                          <jet-button @click="openModalUpdate();selectedDepartment=department"> <jet-edit/> </jet-button>
-                          <jet-modify-button @click="openModalDelete();selectedDepartment=department"> <jet-delete/> </jet-modify-button>
-                        </td>
-                      </tr>
-                    </template>  
-                    <template v-if="faculty.colleges">
-                      <tr v-for="college in faculty.colleges" :key="college.id"> 
-                        <td class="px-6 py-4 text-center"><jet-label>{{college.code}}</jet-label></td>
-                        <td class="px-6 py-4 text-center"><div class="text-sm text-gray-500">Escuela Universitaria  de</div>
-                        <jet-label>{{college.name}}</jet-label></td>
-                        <td class="px-6 py-4 text-center"><jet-label>{{college.email}}</jet-label></td>
-                        <td class="px-6 py-4 text-center"><jet-label>{{college.phone}}</jet-label></td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <jet-button @click="openModalInfo();selectedDepartment=department"> <jet-show/> </jet-button>
+                <jet-button @click="openModalUpdate();selectedDepartment=department"> <jet-edit/> </jet-button>
+                <jet-modify-button @click="openModalDelete();selectedDepartment=department"> <jet-delete/> </jet-modify-button>
+              </td>
+            </tr>
+          </template>  
+          <template v-if="faculty.colleges">
+            <tr v-for="college in faculty.colleges" :key="college.id"> 
+              <td class="px-6 py-4 text-center"><jet-label>{{college.code}}</jet-label></td>
+              <td class="px-6 py-4 text-center"><div class="text-sm text-gray-500">Escuela Universitaria  de</div>
+              <jet-label>{{college.name}}</jet-label></td>
+              <td class="px-6 py-4 text-center"><jet-label>{{college.email}}</jet-label></td>
+              <td class="px-6 py-4 text-center"><jet-label>{{college.phone}}</jet-label></td>
 
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <jet-button @click="openModalInfo();selectedCollege=college"> <jet-show/> </jet-button>
-                          <jet-button @click="openModalUpdate();selectedCollege=college"> <jet-edit/> </jet-button>
-                          <jet-modify-button @click="openModalDelete();selectedCollege=college"> <jet-delete/> </jet-modify-button>
-                        </td>
-                      </tr>
-                    </template> 
-                  </template>  
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <jet-button @click="openModalInfo();selectedCollege=college"> <jet-show/> </jet-button>
+                <jet-button @click="openModalUpdate();selectedCollege=college"> <jet-edit/> </jet-button>
+                <jet-modify-button @click="openModalDelete();selectedCollege=college"> <jet-delete/> </jet-modify-button>
+              </td>
+            </tr>
+          </template> 
+        </template>  
+      </tbody>
+    </table>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
   </div>     
 
   <jet-dialog-modal :show="modalInfo">
@@ -158,28 +158,19 @@ export default {
     JetEdit, JetShow, JetDelete, ModalShowIcon, ModalEditIcon, ModalDeleteIcon
   },
 
-  props:{ DepartmentsOf:Object, columns:Array, selectedDepartment: Object, selectedCollege: Object, errors: Object,
-    },
+  props:{ DepartmentsOf:Object, columns:Array, selectedDepartment: Object, selectedCollege: Object },
 
   data(){
-    return{ 
-      modalUpdate: false, modalDelete: false, modalInfo: false,        
-    }    
+    return{ modalUpdate: false, modalDelete: false, modalInfo: false }    
   },
 
   methods:{
-    openModalInfo(){this.modalInfo =true }, closeModalInfo(){this.modalInfo =false;},
-    openModalUpdate(){this.modalUpdate =true}, closeModalUpdate(){this.modalUpdate =false},
-    openModalDelete(){this.modalDelete =true}, closeModalDelete(){this.modalDelete =false},
-
     showCarreersOfDepartment: function(){ Inertia.get(route("departments.show", {department: this.selectedDepartment} )); this.closeModalInfo(); },
     showCarreersOfCollege: function(){ Inertia.get(route("colleges.show", {college: this.selectedCollege} )); this.closeModalInfo(); },
-    
     updateDepartment: function(){Inertia.get(route('departments.edit', { department: this.selectedDepartment} )); },
     updateCollege: function(){Inertia.get(route('colleges.edit', { college: this.selectedCollege} )); },
 
-
-
+//////////////////NO FUNCIONAN ////////////////////
     InfoDepartment: function(){
       //Corregir para que cargue, segun la facultad o departamento que solicitan. Esto es solo testing
       let url="'https://'{DepartmentsOf[0].website}"
@@ -202,9 +193,10 @@ export default {
       console.log(facultiesanddepartment)
       Inertia.delete(route('facultiesanddepartments.destroy', { facultiesanddepartment: this.selectedDepartment.pivot} ))  
     },
-  
-  
+  /////////////////////////////////////////////////////////////////
+    openModalInfo(){this.modalInfo =true }, closeModalInfo(){this.modalInfo =false;},
+    openModalUpdate(){this.modalUpdate =true}, closeModalUpdate(){this.modalUpdate =false},
+    openModalDelete(){this.modalDelete =true}, closeModalDelete(){this.modalDelete =false},
   },
-
 }
 </script>

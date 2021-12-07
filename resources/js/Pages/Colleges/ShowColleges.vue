@@ -18,7 +18,7 @@
           <option class="py-1" v-for="(option, index) in options" :key="index" v-bind:value="index">{{option}}</option>
         </select>
         <button class="my-2 px-3 py-1 float-right" @click="exportExcel()"> <jet-export/> </button>
-        <button class="my-2 px-3 py-1 float-right" @click="openModalExcel()"> <jet-import/> </button>  
+        <button class="my-2 px-3 py-1 float-right" @click="openExcelRegister()"> <jet-import/> </button>  
       </div>
     </div>   
 
@@ -38,9 +38,9 @@
             <td class="px-6 py-4 text-center"><jet-label>{{college.phone}}</jet-label></td>
 
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <jet-button @click="openModalShow();selectedCollege=college"> <jet-show/> </jet-button>
-              <jet-button @click="openModalUpdate();selectedCollege=college"> <jet-edit/> </jet-button>
-              <jet-modify-button @click="openModalDelete();selectedCollege=college"> <jet-delete/> </jet-modify-button>
+              <jet-button @click="this.modalShow=true;selectedCollege=college"> <jet-show/> </jet-button>
+              <jet-button @click="this.modalUpdate=true;selectedCollege=college"> <jet-edit/> </jet-button>
+              <jet-modify-button @click="this.modalDelete=true;selectedCollege=college"> <jet-delete/> </jet-modify-button>
             </td>
           </tr>
         </tbody>
@@ -59,7 +59,7 @@
       <p class="text-sm text-gray-500 px-8"> ¿Estas seguro de querer ir a ver sus Carreras?</p>   
     </template>
     <template v-slot:footer>
-      <jet-modify-button @click="closeModalShow()">Cerrar</jet-modify-button>
+      <jet-modify-button @click="this.modalShow=false">Cerrar</jet-modify-button>
       <jet-danger-button @click="showCarreersOf()">Ir a Carreras</jet-danger-button>    
     </template>
   </jet-dialog-modal>
@@ -71,7 +71,7 @@
       <p class="text-sm text-gray-500 px-8">¿Estas seguro de querer eliminar este elemento?</p>    
     </template>
     <template v-slot:footer>
-      <jet-modify-button @click="closeModalDelete()">Cerrar</jet-modify-button>
+      <jet-modify-button @click="this.modalDelete=false">Cerrar</jet-modify-button>
       <jet-danger-button @click="deleteCollege()">Dehabilitar</jet-danger-button>    
     </template>
   </jet-dialog-modal>
@@ -83,15 +83,16 @@
       <p class="text-sm text-gray-500 px-8">¿Estas seguro de querer Actualizar este elemento?</p>    
     </template>
     <template v-slot:footer>
-      <jet-modify-button @click="closeModalUpdate()">Cerrar</jet-modify-button>
+      <jet-modify-button @click="this.modalUpdate=false">Cerrar</jet-modify-button>
       <jet-danger-button @click="updateCollege()"> Modificar</jet-danger-button>    
     </template>
   </jet-dialog-modal>
 
-  <excel-modal :show="modalExcel"></excel-modal>
-  <register-modal :show="modalCreate"></register-modal>
-  <excel-modal-carreer :show="modalExcelCarreer"></excel-modal-carreer>
-  <relation-modal-carreer :show="modalRelationCarreer"></relation-modal-carreer>
+  <register-college :show="modalRegisterCollege"></register-college>
+  <excel-register :show="modalExcelRegister"></excel-register>
+
+  <excel-college-has-carreer :show="modalExcelRelationCCarreer"></excel-college-has-carreer>
+  <college-has-carreer :show="modalRelationCCarreer"></college-has-carreer>
 
 </app-layout>
 </template>
@@ -115,19 +116,19 @@ import ModalShowIcon from '@/Jetstream/modalShowIcon'
 import ModalEditIcon from '@/Jetstream/modalEditIcon'
 import ModalDeleteIcon from '@/Jetstream/modalDeleteIcon'
 
-import RegisterModal from '@/Pages/Colleges/Modals/RegisterModal.vue';
-import ExcelModal from '@/Pages/Colleges/Modals/ExcelModal.vue';
+import RegisterCollege from '@/Pages/Colleges/Modals/RegisterModal.vue';
+import ExcelRegister from '@/Pages/Colleges/Modals/ExcelModal.vue';
 
-import RelationModalCarreer from '@/Pages/Colleges/Carreers/Modals/RelationsModal.vue';
-import ExcelModalCarreer from '@/Pages/Colleges/Carreers/Modals/ExcelModalRelation.vue';
+import CollegeHasCarreer from '@/Pages/Colleges/Carreers/Modals/RelationsModal.vue';
+import ExcelCollegeHasCarreer from '@/Pages/Colleges/Carreers/Modals/ExcelModalRelation.vue';
 
 
 export default {
   props:{ colleges: Array, columns: Array, options: Object},
    
   data(){  
-    return{ modalShow: false, modalDelete: false, modalUpdate: false, modalCreate: false, modalExcel: false,
-            modalRelationCarreer: false, modalExcelCarreer:false,
+    return{ modalShow: false, modalDelete: false, modalUpdate: false, modalRegisterCollege: false, modalExcelRegister: false,
+            modalRelationCCarreer: false, modalExcelRelationCCarreer:false,
             selectedCollege: Object,
         
       selectedModal:{ value: ''}, 
@@ -138,32 +139,31 @@ export default {
   components:{
     AppLayout, JetDialogModal, JetLabel, JetTitleLabel, JetButton, JetModifyButton, JetDangerButton,
     JetShow, JetEdit, JetDelete, JetImport, JetExport, ModalShowIcon, ModalEditIcon, ModalDeleteIcon,
-    RegisterModal, ExcelModal, 
-    RelationModalCarreer, ExcelModalCarreer    
+    RegisterCollege, ExcelRegister, 
+    CollegeHasCarreer, ExcelCollegeHasCarreer    
   },
 
   watch: {
     'selectedModal.value'(val) {
-      if(val == 1){ this.openModalCreate()}
-      else if(val == 2){ this.openModalRelationsCarreer()}
-      else if(val == 3){ this.openModalExcelRelationCarreer()}
+      if(val == 1){ this.openRegisterCollege()}
+      else if(val == 2){ this.openCollegeHasCarreer()}
+      else if(val == 3){ this.openExcelCollegeHasCarreers()}
       }
     },
 
   methods:{
-    openModalShow() {this.modalShow=true}, closeModalShow() {this.modalShow=false},
-    openModalUpdate() {this.modalUpdate=true}, closeModalUpdate() {this.modalUpdate=false},
-    openModalDelete() {this.modalDelete=true}, closeModalDelete() {this.modalDelete=false},
-    openModalCreate(){this.modalCreate = true}, closeModalCreate(){this.modalCreate = false},
-    openModalExcel(){this.modalExcel = true}, closeModalExcel(){this.modalExcel = false},
-    openModalExcelRelationCarreer(){this.modalExcelCarreer = true}, closeModalExcelRelationCarreer(){this.modalExcelCarreer = false},
-    openModalRelationsCarreer(){this.modalRelationCarreer= true}, closeModalRelationsCarreer(){this.modalRelationCarreer= false}, 
-
     submit: function(){this.form.get(route("colleges.index"))},
     exportExcel: function(){Inertia.get(route('colleges.export'))} ,
     deleteCollege: function(){Inertia.delete(route("colleges.destroy", {college: this.selectedCollege}));this.closeModalDelete()},
     updateCollege: function(){Inertia.get(route("colleges.edit", {college: this.selectedCollege} ));this.closeModalUpdate()},
     showCarreersOf: function(){ Inertia.get(route('colleges.show', { college: this.selectedCollege} ))},
+
+    openRegisterCollege(){this.modalRegisterCollege = true}, closeRegisterCollege(){this.modalRegisterCollege = false},
+    openExcelRegister(){this.modalExcelRegister = true}, closeExcelRegister(){this.modalExcelRegister = false},
+    openExcelCollegeHasCarreers(){this.modalExcelRelationCCarreer = true}, closeExcelCollegeHasCarreers(){this.modalExcelRelationCCarreer = false},
+    openCollegeHasCarreer(){this.modalRelationCCarreer= true}, closeModalRelationsCarreer(){this.modalRelationCCarreer= false}, 
+
+    
   }
 };
 </script>

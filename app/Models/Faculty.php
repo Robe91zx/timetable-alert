@@ -17,17 +17,17 @@ class Faculty extends Model
 
     public function departments()
     {
-        return $this->belongsToMany(Department::class, 'faculty_departments','faculty_vcode','department_vcode','vcode','vcode');
+        return $this->belongsToMany(Department::class, 'faculty_has_departments','faculty_vcode','department_vcode','vcode','vcode');
     }                                                   //pivot                     1               2                1     2
 
     public function colleges()
     {
-        return $this->belongsToMany(College::class, 'faculty_colleges','faculty_vcode','college_vcode','vcode','vcode');
+        return $this->belongsToMany(College::class, 'faculty_has_colleges','faculty_vcode','college_vcode','vcode','vcode');
     } 
 
     public function carreers()
     {
-        return $this->belongsToMany(Carreer::class, 'faculty_carreers','faculty_vcode','carreer_vcode','vcode','vcode');
+        return $this->belongsToMany(Carreer::class, 'faculty_has_carreers','faculty_vcode','carreer_vcode','vcode','vcode');
     } 
 
     public function subjects()

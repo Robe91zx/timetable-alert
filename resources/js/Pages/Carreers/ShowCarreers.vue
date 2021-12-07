@@ -167,7 +167,7 @@ export default {
     updateCarreer: function(){Inertia.get(route("carreers.edit", { carreer: this.selectedCarreer} )); this.closeModalUpdate()},
       
     showCarreer: function(){ window.open(this.selectedCarreer.website)},
-    showCurriculumsOf: function(){Inertia.get(route('carreers.show', { carreer: this.selectedCarreer})); this.closeModalShow()},
+    showCurriculumsOf: function(){Inertia.get(route('carreers.showCurriculums', { carreer: this.selectedCarreer})); this.closeModalShow()},
     showSubjectsOf: function(){},
      
     },

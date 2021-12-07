@@ -14,11 +14,11 @@ class College extends Model
     protected $fillable = ['vcode','code','name','phone','email','website'];
 
     public function faculties(){
-        return $this->belongsToMany(Faculty::class, 'faculty_colleges', 'college_vcode','faculty_vcode','vcode','vcode');
+        return $this->belongsToMany(Faculty::class, 'faculty_has_colleges', 'college_vcode','faculty_vcode','vcode','vcode');
     }
 
     public function carreers(){
-        return $this->belongsToMany(Carreer::class, 'college_carreers','college_vcode','carreer_vcode', 'vcode', 'vcode');
+        return $this->belongsToMany(Carreer::class, 'college_has_carreers','college_vcode','carreer_vcode', 'vcode', 'vcode');
     }
 
     const COLLEGES_COLUMNS = [

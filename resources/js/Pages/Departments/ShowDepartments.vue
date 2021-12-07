@@ -18,7 +18,7 @@
           <option class="py-1" v-for="(option, index) in options" :key="index" v-bind:value="index">{{option}}</option>
         </select>
         <button class="my-2 px-3 py-1 float-right" @click="exportExcel()"> <jet-export/> </button>
-        <button class="my-2 px-3 py-1 float-right" @click="openModalExcel()"> <jet-import/> </button>  
+        <button class="my-2 px-3 py-1 float-right" @click="openExcelRegister()"> <jet-import/> </button>  
       </div>
     </div>   
 
@@ -38,9 +38,9 @@
             <td class="px-6 py-4 text-center"><jet-label>{{department.phone}}</jet-label></td>
 
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <jet-button @click="openModalShow();selectedDepartment=department"> <jet-show/> </jet-button>
-              <jet-button @click="openModalUpdate();selectedDepartment=department"> <jet-edit/> </jet-button>
-              <jet-modify-button @click="openModalDelete();selectedDepartment=department"> <jet-delete/> </jet-modify-button>
+              <jet-button @click="this.modalShow=true;selectedDepartment=department"> <jet-show/> </jet-button>
+              <jet-button @click="this.modalUpdate=true;selectedDepartment=department"> <jet-edit/> </jet-button>
+              <jet-modify-button @click="this.modalDelete=true;selectedDepartment=department"> <jet-delete/> </jet-modify-button>
             </td>
           </tr>
         </tbody>
@@ -59,7 +59,7 @@
       <p class="text-sm text-gray-500 px-8"> ¿Estas seguro de querer ir a ver sus Carreras?</p>   
     </template>
     <template v-slot:footer>
-      <jet-modify-button @click="closeModalShow()">Cerrar</jet-modify-button>
+      <jet-modify-button @click="this.modalShow=false">Cerrar</jet-modify-button>
       <jet-danger-button @click="showCarreersOf()">Ir a Carreras</jet-danger-button>    
     </template>
   </jet-dialog-modal>
@@ -71,7 +71,7 @@
       <p class="text-sm text-gray-500 px-8">¿Estas seguro de querer eliminar este elemento?</p>    
     </template>
     <template v-slot:footer>
-      <jet-modify-button @click="closeModalDelete()">Cerrar</jet-modify-button>
+      <jet-modify-button @click="this.modalDelete=false">Cerrar</jet-modify-button>
       <jet-danger-button @click="deleteDepartment()">Dehabilitar</jet-danger-button>    
     </template>
   </jet-dialog-modal>
@@ -83,15 +83,16 @@
       <p class="text-sm text-gray-500 px-8">¿Estas seguro de querer Actualizar este elemento?</p>    
     </template>
     <template v-slot:footer>
-      <jet-modify-button @click="closeModalUpdate()">Cerrar</jet-modify-button>
+      <jet-modify-button @click="this.modalUpdate=false">Cerrar</jet-modify-button>
       <jet-danger-button @click="updateDepartment()"> Modificar</jet-danger-button>    
     </template>
   </jet-dialog-modal>
 
-  <excel-modal :show="modalExcel"></excel-modal>
-  <register-modal :show="modalCreate"></register-modal>
-  <excel-modal-carreer :show="modalExcelCarreer"></excel-modal-carreer>
-  <relation-modal-carreer :show="modalRelationCarreer"></relation-modal-carreer>
+  <register-department :show="modalRegisterDepartment"></register-department>
+  <excel-register :show="modalExcelRegister"></excel-register>
+  
+  <excel-department-has-carreer :show="modalExcelRelationDCarreer"></excel-department-has-carreer>
+  <department-has-carreer :show="modalRelationDCarreer"></department-has-carreer>
   
 </app-layout>
 </template>
@@ -115,18 +116,18 @@ import ModalShowIcon from '@/Jetstream/modalShowIcon'
 import ModalEditIcon from '@/Jetstream/modalEditIcon'
 import ModalDeleteIcon from '@/Jetstream/modalDeleteIcon'
 
-import RegisterModal from '@/Pages/Departments/Modals/RegisterModal.vue';
-import ExcelModal from '@/Pages/Departments/Modals/ExcelModal.vue';
+import RegisterDepartment from '@/Pages/Departments/Modals/RegisterModal.vue';
+import ExcelRegister from '@/Pages/Departments/Modals/ExcelModal.vue';
 
-import RelationModalCarreer from '@/Pages/Departments/Carreers/Modals/RelationsModal.vue';
-import ExcelModalCarreer from '@/Pages/Departments/Carreers/Modals/ExcelModalRelation.vue';
+import DepartmentHasCarreer from '@/Pages/Departments/Carreers/Modals/RelationsModal.vue';
+import ExcelDepartmentHasCarreer from '@/Pages/Departments/Carreers/Modals/ExcelModalRelation.vue';
 
 export default {
   props:{ departments: Array, columns: Array, options: Object},
     
   data(){  
-    return{ modalShow: false,  modalUpdate: false, modalDelete: false, modalCreate: false, modalExcel: false, 
-            modalRelationCarreer: false, modalExcelCarreer:false,
+    return{ modalShow: false,  modalUpdate: false, modalDelete: false, modalRegisterDepartment: false, modalExcelRegister: false, 
+            modalRelationDCarreer: false, modalExcelRelationDCarreer:false,
             selectedDepartment: Object,
         
       selectedModal:{ value: ''}, 
@@ -137,33 +138,29 @@ export default {
   components:{
     AppLayout, JetDialogModal, JetLabel, JetTitleLabel, JetButton, JetModifyButton, JetDangerButton,
     JetShow, JetEdit, JetDelete, JetImport, JetExport, ModalShowIcon, ModalEditIcon, ModalDeleteIcon,
-    RegisterModal, ExcelModal,
-    RelationModalCarreer, ExcelModalCarreer  
+    RegisterDepartment, ExcelRegister,
+    DepartmentHasCarreer, ExcelDepartmentHasCarreer  
   },
 
   watch: {
     'selectedModal.value'(val) {
-      if(val == 1){ this.openModalCreate()}
-      else if(val == 2){ this.openModalRelationsCarreer()}
-      else if(val == 3){ this.openModalExcelRelationCarreer()}
+      if(val == 1){ this.openRegisterDepartment()}
+      else if(val == 2){ this.openDepartmentHasCarreer()}
+      else if(val == 3){ this.openExcelDepartmentHasCarreers()}
       }
     },
 
-    methods:{
-      openModalShow() {this.modalShow=true}, closeModalShow() {this.modalShow=false},
-      openModalUpdate() {this.modalUpdate=true}, closeModalUpdate() {this.modalUpdate=false},
-      openModalDelete() {this.modalDelete=true}, closeModalDelete() {this.modalDelete=false},
-      openModalCreate(){this.modalCreate = true}, closeModalCreate(){this.modalCreate = false},
-      openModalExcel(){this.modalExcel = true}, closeModalExcel(){this.modalExcel = false},
-      openModalExcelRelationCarreer(){this.modalExcelCarreer = true}, closeModalExcelRelationCarreer(){this.modalExcelCarreer = false},
-      openModalRelationsCarreer(){this.modalRelationCarreer= true}, closeModalRelationsCarreer(){this.modalRelationCarreer= false}, 
-
-      submit: function(){Inertia.get(route("departments.index"),this.form);},
-      exportExcel: function(){Inertia.get(route('departments.export'))} ,
-      deleteDepartment: function(){Inertia.delete(route("departments.destroy", {department: this.selectedDepartment}));this.closeModalDelete()},
-      updateDepartment: function(){Inertia.get(route("departments.edit", {department: this.selectedDepartment} ));this.closeModalUpdate()},
-      showCarreersOf: function(){ Inertia.get(route('departments.show', { department: this.selectedDepartment} ))},
+  methods:{  
+    submit: function(){Inertia.get(route("departments.index"),this.form);},
+    exportExcel: function(){Inertia.get(route('departments.export'))} ,
+    deleteDepartment: function(){Inertia.delete(route("departments.destroy", {department: this.selectedDepartment}));this.closeModalDelete()},
+    updateDepartment: function(){Inertia.get(route("departments.edit", {department: this.selectedDepartment} ));this.closeModalUpdate()},
+    showCarreersOf: function(){ Inertia.get(route('departments.show', { department: this.selectedDepartment} ))},
    
+    openRegisterDepartment(){this.modalRegisterDepartment = true}, closeRegisterDepartment(){this.modalRegisterDepartment = false},
+    openExcelRegister(){this.modalExcelRegister = true}, closeExcelRegister(){this.modalExcelRegister = false},
+    openExcelDepartmentHasCarreers(){this.modalExcelRelationDCarreer = true}, closeExcelDepartmentHasCarreers(){this.modalExcelRelationDCarreer = false},
+    openDepartmentHasCarreer(){this.modalRelationDCarreer= true}, closeDepartmentHasCarreer(){this.modalRelationDCarreer= false}, 
    }
 };
 </script>

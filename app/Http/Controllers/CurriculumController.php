@@ -75,6 +75,11 @@ class CurriculumController extends Controller
         //
     }
 
+    public function showSubjects(Curriculum $curriculum)
+    {
+        
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
