@@ -49,7 +49,7 @@ import Modal from '@/Jetstream/Modal.vue';
 import JetTitle from "@/Jetstream/Title";
 import JetButton from "@/Jetstream/Button";
 import ExitIcon from "@/Jetstream/ExitIcon";
-import UploadIcon from "@/Jetstream/UploadIcon"
+import UploadIcon from "@/Jetstream/UploadIcon";
 
 export default defineComponent({
   data(){

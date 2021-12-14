@@ -2,11 +2,11 @@
 
 namespace App\Imports;
 
-use App\Models\FacultyCollege;
+use App\Models\Subject_hasCourse;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class FacultyandCollegeImport implements ToModel,withHeadingRow
+class Subject_hasCourseImport implements ToModel,withHeadingRow
 {
     /**
     * @param array $row
@@ -15,9 +15,9 @@ class FacultyandCollegeImport implements ToModel,withHeadingRow
     */
     public function model(array $row)
     {
-        return new FacultyCollege([
-            'faculty_vcode' => $row['faculty_vcode'],
-            'college_vcode' => $row['college_vcode'],
-        ]);   
+        return new Subject_hasCourse([
+            'subject_vcode' => $row['subject_vcode'],
+            'course_vcode' => $row['course_vcode'],
+        ]);
     }
 }

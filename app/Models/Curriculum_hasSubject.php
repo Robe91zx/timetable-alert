@@ -9,4 +9,5 @@ class Curriculum_hasSubject extends Model
 {
     use HasFactory;
     protected $fillable = ['curriculum_vcode','subject_vcode'];
+
 }

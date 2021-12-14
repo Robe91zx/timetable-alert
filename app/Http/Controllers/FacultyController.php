@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\College;
+use App\Models\Subject;
 use App\Models\Faculty_hasDepartment;
 use App\Models\Faculty_hasCarreer;
 use App\Models\Faculty_hasSubject;
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreFaculty;
 use App\Http\Requests\UpdateFaculty;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
 use Excel;
@@ -161,26 +162,26 @@ class FacultyController extends Controller
         return Excel::download(new FacultiesExport,'faculties.xlsx');  
     }
 
-
-
-
-
-/////////////////////////CHECK THIS///////////////////////
-
-
-    public function getFaculties()
+    public function getFaculties(Faculty $faculty)
     {
-        $faculties = Faculty::all();
+        $faculties = Faculty::select('vcode','name')->get();
 
         return response()->json($faculties);
     }
 
-    public function getFaculty(Faculty $faculty)
+    public function getFacultySubjects(Request $request)
     {
-        $faculty = Faculty::where('id','=',$faculty->id);
-
-        return response()->json($faculty);
+        $subjects = Subject::select('vcode','code','name')->where('faculty_vcode',$request->faculty)->get();
+        
+        return response()->json($subjects);
     }
 
-    
+    public function getactiveSubjects(Request $request)
+    {
+        $subjects = Subject::where([['faculty_vcode', $request->faculty], ['state', 1]])->get();
+        
+        return response()->json($subjects);
+    }
+
+    /////////////////////////CHECK THIS///////////////////////
 }

@@ -7,6 +7,8 @@ use App\Models\Course;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\StoreCourse;
+use App\Http\Requests\UpdateCourse;
 
 class CourseController extends Controller
 {
@@ -17,15 +19,20 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::with('subjects')->get();
-        
+        $columns = Course::COURSE_COLUMNS;
+        $options = Course::COURSE_OPTIONS;
+
         if(request()->has("name")){
             $name = request("name");
-            $courses = Course::with('subjects')
+            $courses = Subject::with('courses')->get ();
+            
+            /*Course::with('subjects')
                        ->join('subjects','courses.subject_id', '=','subjects.id') 
                        ->where('subjects.name','like','%'.$name.'%')->get();
+        */ }else{
+            $courses = Subject::with('courses')->get();
         }
-        return Inertia::render('ShowCourse',['courses' => $courses]);
+        return Inertia::render('Courses/ShowCourse', ['subjects' => $courses, 'columns' => $columns, 'options' => $options]);
     }
 
     /**
@@ -35,8 +42,7 @@ class CourseController extends Controller
      */
     public function create()
     {
-        $subjects = Subject::all();
-        return Inertia::render('CreateCourseForm', ['subjects' => $subjects]);
+        //
     }
 
     /**
@@ -45,19 +51,12 @@ class CourseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCourse $request)
     {
-        $request->validate([
-            'state' => 'required',
-            'semester' => 'required',
-            'hours' => 'required',
-            'description' => 'required',
-            'group' => 'required',
-            'subject_id' => 'required',
-        ]);
-
         Course::create($request->all());
-        request()->session()->flash('message', "Curso Creado");
+        request()->session()->flash('flash.banner', "Curso {$request->name} Creado");
+        request()->session()->flash('flash.bannerStyle', 'success');     
+        
         return Redirect::route('courses.index');
     }
 
@@ -80,7 +79,7 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        return Inertia::render('EditCourseForm',['course'=>$course]);
+        return Inertia::render('EditCourseForm', ['course' => $course]);
     }
 
     /**
@@ -90,10 +89,12 @@ class CourseController extends Controller
      * @param  \App\Models\Course  $course
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Course $course)
+    public function update(UpdateCourse $request, Course $course)
     {
         $course-> update($request->all());
-        request()->session()->flash('message', "Curso Actualizado");
+        request()->session()->flash('flash.banner', "Curso {$request->name} Actualizado ");
+        request()->session()->flash('flash.bannerStyle', 'success');  
+        
         return Redirect::route('courses.index');
 
     }

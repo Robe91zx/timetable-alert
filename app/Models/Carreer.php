@@ -11,15 +11,15 @@ class Carreer extends Model
     protected $fillable = ['code','name','website','vcode','phone','email'];
 
     public function faculties(){
-        return $this->belongsToMany(Faculty::class, 'faculty_carreers','faculty_vcode','carreer_vcode','vcode','vcode');
+        return $this->belongsToMany(Faculty::class, 'faculty_has_carreers','carreer_vcode','faculty_vcode','vcode','vcode');
     } 
     
     public function departments(){
-        return $this->belongsToMany(Department::class,'department_carreers','carreer_vcode', 'department_vcode', 'vcode', 'vcode');
+        return $this->belongsToMany(Department::class,'department_has_carreers','carreer_vcode', 'department_vcode', 'vcode', 'vcode');
     }
 
     public function colleges(){
-        return $this->belongsToMany(Department::class, 'college_carreers','carreer_vcode', 'department_vcode', 'vcode', 'vcode');
+        return $this->belongsToMany(Department::class, 'college_has_carreers','carreer_vcode', 'department_vcode', 'vcode', 'vcode');
     }
 //en este caso, indico la clave foranea + el valor al que este referencia
     public function curriculums(){

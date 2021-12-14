@@ -126,13 +126,6 @@ class CarreerController extends Controller
         return Redirect::route('carreers.index');
     }
 
-    public function getCarreers()
-    {
-       $carreers = Carreer::all();
-       
-       return response()->json($carreers);
-    }
-
     public function import(Request $request)
     {
         $path = $request->file('file');
@@ -150,6 +143,14 @@ class CarreerController extends Controller
         request()->session()->flash('flash.bannerStyle', 'success');
 
         return Excel::download(new CarreersExport,'carreers.xlsx');
-         
+    }
+
+    public function getCarreers(Request $request)
+    {
+        $carreers = Carreer::with(['faculties' => fn($query) => $query->where('vcode', $request->faculty)])
+        ->whereHas('faculties', fn($query) => $query->where('vcode', $request->faculty)
+        )->get();
+        
+        return response()->json($carreers);
     }
 }

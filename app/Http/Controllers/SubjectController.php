@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Subject;
 use App\Models\Faculty;
+use App\Models\Curriculum;
+//aca van los has
 use App\Http\Requests\StoreSubject;
 use App\Http\Requests\UpdateSubject;
-use App\Models\Curriculum;
-use App\Models\Subject;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
 use Excel;
-use App\Imports\SubjectsImport;
-use App\Exports\SubjectsExport;
+use App\Imports\SubjectImport;
+use App\Exports\SubjectExport;
 
 class SubjectController extends Controller
 {
@@ -69,12 +70,18 @@ class SubjectController extends Controller
      * @param  \App\Models\Subject  $subject
      * @return \Illuminate\Http\Response
      */
+    
     public function show(Subject $subject)
     {
-        //$columns = ;
-        $AllOf = Curriculum::with('curriculums')->where('vcode','=',$subject->vcode)->get();
+        //
+    }
+    
+     public function showCourses(Subject $subject)
+    {
+        $columns = Subject::SUBJECT_COURSES_COLUMNS;
+        $AllOf = Subject::with('courses')->where('vcode','=',$subject->vcode)->get();
 
-        return Inertia::render('Relations/Departments_Colleges_OfFaculty', ['CoursesOf'=> $AllOf, 'columns'=> $columns]);
+        return Inertia::render('Subjects/Courses/CoursesOfSubject', ['CoursesOf'=> $AllOf, 'columns'=> $columns]);
     }
 
     /**
@@ -139,6 +146,17 @@ class SubjectController extends Controller
     }
 
 /////////////////////////////////////////////////////////////////
+    public function ChangeGlobalState(Request $request)
+    {
+        if($request == 1){
+            Subject::where('state', 0)->update(['state' => 1]);
+        }else{
+            Subject::where('state', 1)->update(['state' => 0]);
+        }
+    }
+
+
+
 
     //Metodos Personalizados
     public function getSubjects(Request $request)
@@ -147,7 +165,6 @@ class SubjectController extends Controller
             $subjects = Subject::where('curriculum_id', $request->curriculum_id)->get();
         }
         return response()->json($subjects);
-
     }
 
     public function getSubjects2(Request $request)
@@ -156,16 +173,13 @@ class SubjectController extends Controller
             $subjects2 = Subject::where('curriculum_id', $request->curriculum_id)->get();
         }
         return response()->json($subjects2);
-
     }
+
     public function storemultiple(Request $request)
     {
 
         $elements = $request->all();
         $subjects = json_decode($request->all());
         return $subjects;
-    }
-   
-
-    
+    }  
 }

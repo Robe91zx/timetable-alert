@@ -58,12 +58,12 @@
 <script>
 import { defineComponent } from 'vue';
 import { useForm} from '@inertiajs/inertia-vue3';
-import Modal from '@/Jetstream/Modal.vue'
-import JetTitle from "@/Jetstream/Title"
-import JetFormTitle from "@/Jetstream/FormTitle"
-import JetFormInput from "@/Jetstream/FormInput"
-import JetButton from "@/Jetstream/Button"
-import ExitIcon from "@/Jetstream/ExitIcon"
+import Modal from '@/Jetstream/Modal.vue';
+import JetTitle from "@/Jetstream/Title";
+import JetFormTitle from "@/Jetstream/FormTitle";
+import JetFormInput from "@/Jetstream/FormInput";
+import JetButton from "@/Jetstream/Button";
+import ExitIcon from "@/Jetstream/ExitIcon";
 
 export default defineComponent({
   data(){

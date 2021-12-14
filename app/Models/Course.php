@@ -8,12 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Course extends Model
 {
     use HasFactory;
-    protected $fillable = ['state','semester','hours','description','group','subject_id'];
+    protected $fillable = ['vcode','code','group','description', 'semester','hours','subject_vcode','state'];
 
-//one to Many
     public function subjects(){
-        return $this->belongsTo(Subject::class, 'subject_id');
+        return $this->belongsTo(Subject::class, 'subject_vcode','vcode');
     }
+
+
+
+
+////////////////////////////////////////////////////////
+    
 
     public function workshop(){
         return $this->hasOne(Workshop::class, 'id');
@@ -27,4 +32,18 @@ class Course extends Model
     public function user(){
         return $this->belongsToMany(User::class, 'user_course');
     }
+
+    const COURSE_COLUMNS = [
+        '0' =>'Codigo',
+        '1' =>'asignatura',
+        '2' =>'grupo',
+        '3' =>'semestre',
+    ];
+
+    const COURSE_OPTIONS = [
+        '1' =>'Agregar Facultad',
+        '2' =>'Asignar Departamentos a Facultades',
+        '3' =>'Asignar Departamentos a Facultades desde Excel',
+        '4' =>'Editar Facultades'
+    ];
 }

@@ -77,7 +77,10 @@ class CurriculumController extends Controller
 
     public function showSubjects(Curriculum $curriculum)
     {
-        
+        $columns = Curriculum::CURRICULUM_SUBJECTS;
+        $subjects = Curriculum::with('subjects')->where('vcode',$curriculum->vcode)->get();
+
+        return Inertia::render('Curriculums/Subjects/SubjectsOfCurriculums', ['subjectsOf' => $subjects, 'columns' => $columns]);
     }
 
     /**
@@ -88,7 +91,7 @@ class CurriculumController extends Controller
      */
     public function edit(Curriculum $curriculum)
     {
-        return Inertia::render('Curriculums/EditCurriculumForm', ['curriculum'=>$curriculum]);
+        return Inertia::render('Curriculums/EditCurriculumForm', ['curriculum' => $curriculum]);
     }
 
     /**
@@ -122,6 +125,36 @@ class CurriculumController extends Controller
         return Redirect::route('curriculums.index');
     }
 
+    public function import(Request $request)
+    {
+        $request->validate([
+           'file' => 'required|max:10000|mimes:xlsx,xls',
+        ]);
+        $path = $request->file('file');
+        
+        Excel::import(new CurriculumsImport, $path);
+        request()->session()->flash('message', "Mallas Cargadas ");
+
+        return Redirect::route('curriculums.index');
+    }
+
+    public function export()
+    {
+        request()->session()->flash('message', "Archivo Generado");
+        return Excel::download(new CurriculumsExport,'curriculums.xlsx');
+    }
+
+/////////////////////////////////////////////////
+
+    public function getCurriculums(Request $request)
+    {
+       //on relationsModal im passing params: carreer
+        $curriculums = Curriculum::where('carreer_vcode',$request->carreer)->get();
+
+        return response()->json($curriculums);
+}
+
+
     public function remove(Request $request)
     {
         $curriculum->update(['carreer_vcode' => '0']);
@@ -144,11 +177,6 @@ class CurriculumController extends Controller
         return response()->json($curriculum);
     }
 
-    public function getCurriculums()
-    {
-       $curriculums = Curriculum::all();
-       return response()->json($curriculums);
-    }
 
     public function otherCurriculums(Request $request)
     {
@@ -159,24 +187,7 @@ class CurriculumController extends Controller
 
     }
 
+    
 
-
-    public function import(Request $request)
-    {
-        $request->validate([
-           'file' => 'required|max:10000|mimes:xlsx,xls',
-        ]);
-        $path = $request->file('file');
-        
-        Excel::import(new CurriculumsImport, $path);
-        request()->session()->flash('message', "Mallas Cargadas ");
-
-        return Redirect::route('curriculums.index');
-    }
-
-    public function export()
-    {
-        request()->session()->flash('message', "Archivo Generado");
-        return Excel::download(new CurriculumsExport,'curriculums.xlsx');
-    }
+    
 }

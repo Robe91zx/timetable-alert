@@ -29,6 +29,15 @@ class Curriculum extends Model
 
     const CURRICULUMS_OPTIONS = [
         '1' =>'Agregar Malla',
+        '2' => 'Asignar Asignaturas a Mallas',
+        '3' => 'Asignar Asignaturas a Mallas desde Excel',
 
+    ];
+
+    const CURRICULUM_SUBJECTS = [
+        '0'=> 'Codigo',
+        '1'=> 'Asignatura',
+        '2' => 'Duracion',
+        '3' => 'Estado',
     ];
 }

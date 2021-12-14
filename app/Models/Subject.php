@@ -18,10 +18,8 @@ class Subject extends Model
         return $this->belongsToMany(Curriculum::class,'curriculum_subjects', 'subject_vcode', 'curriculum_vcode' ,'vcode','vcode');
     }
 
-/////////////////////////////////////////////////////////////////
-
-    public function couses(){
-        return $this->hasMany(Course::class, 'id');
+    public function courses(){
+        return $this->hasMany(Course::class, 'subject_vcode','vcode');
     }
 
     const SUBJECTS_COLUMNS = [
@@ -32,8 +30,16 @@ class Subject extends Model
         '5' => 'ESTADO',
     ];
 
-    
     const SUBJECTS_OPTIONS = [
         '1' =>'Agregar Asignatura',
+        '2' =>'Asignar Cursos a Asignaturas',
+        '3' =>'Asignar Cursos a Asignaturas desde Excel'
+    ];
+
+    const SUBJECT_COURSES_COLUMNS = [
+        '0' =>'CODE',
+        '1' =>'ASIGNATURA',
+        '2' =>'COURSO',
+        '3' =>'HOLI',
     ];
 }

@@ -15,16 +15,19 @@ class CreateCoursesTable extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->integer('state');
+            $table->unsignedBigInteger('vcode')->index();
+            $table->string('code');
+            $table->integer('group');
+            $table->text('description')->nullable();
             $table->integer('semester');
             $table->integer('hours');
-            $table->text('description')->nullable();
-            $table->integer('group');
-            $table->foreignId('subject_id')
-                  ->nullable()
-                  ->constrained('subjects')
+            $table->unsignedBigInteger('subject_vcode')->nullable();
+            $table->foreign('subject_vcode')
+                  ->references('vcode')
+                  ->on('subjects')
                   ->cascadeOnUpdate()
                   ->nullOnDelete();
+            $table->integer('state');
             $table->timestamps();
         });
     }

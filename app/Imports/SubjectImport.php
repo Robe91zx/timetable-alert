@@ -16,7 +16,8 @@ class SubjectImport implements ToModel,withHeadingRow
     public function model(array $row)
     {
         return new Subject([
-            'vcode' => $row['name'],
+            'vcode' => $row['vcode'],
+            'code' => $row['code'],
             'name' => $row['name'],
             'semester' => $row['semester'],
             'hours' => $row['hours'],
